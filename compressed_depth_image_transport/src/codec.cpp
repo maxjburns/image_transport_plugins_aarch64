@@ -171,11 +171,7 @@ sensor_msgs::msg::CompressedImage::SharedPtr encodeCompressedDepthImage(
   compressed->format = message.encoding;
 
   auto logger = rclcpp::get_logger("compressed_depth_image_transport");
-
-  // Compression settings
-  std::vector<int> params;
-  params.resize(3, 0);
-
+  
   // Bit depth of image encoding
   int bitDepth = enc::bitDepth(message.encoding);
   int numChannels = enc::numChannels(message.encoding);
@@ -191,8 +187,9 @@ sensor_msgs::msg::CompressedImage::SharedPtr encodeCompressedDepthImage(
   compressed->format += "; compressedDepth";
 
   // Check input format
-  params[0] = cv::IMWRITE_PNG_COMPRESSION;
-  params[1] = png_level;
+  std::vector<int> params;
+  params.push_back(cv::IMWRITE_PNG_COMPRESSION);
+  params.push_back(png_level);
 
   if ((bitDepth == 32) && (numChannels == 1))
   {
